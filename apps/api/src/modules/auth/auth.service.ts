@@ -2,7 +2,6 @@ import { randomBytes, createHash } from 'crypto';
 
 import { REFRESH_TOKEN_EXPIRY_DAYS } from '@cro/shared';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
 import { RedisService } from '../../common/redis/redis.service';
@@ -26,7 +25,6 @@ interface JwtPayload {
 export class AuthService {
   constructor(
     private readonly jwt: JwtService,
-    private readonly config: ConfigService,
     private readonly redis: RedisService,
     private readonly users: UsersService,
   ) {}

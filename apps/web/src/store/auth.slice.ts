@@ -1,7 +1,7 @@
 import { UserProfile } from '@cro/shared';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface AuthState {
+export interface AuthState {
   user: UserProfile | null;
   isAuthenticated: boolean;
 }

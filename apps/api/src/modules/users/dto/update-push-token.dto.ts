@@ -4,5 +4,5 @@ import { IsString } from 'class-validator';
 export class UpdatePushTokenDto {
   @ApiProperty()
   @IsString()
-  token: string;
+  token!: string;
 }
