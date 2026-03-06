@@ -356,7 +356,7 @@ Priorities:
 
 ## MVP Development Phases
 
-### Phase 1 — Foundation (Weeks 1–3)
+### Phase 1 — Foundation
 - Initialize Turborepo, `@cro/config`, `@cro/shared` packages
 - ESLint (airbnb) + Prettier, Husky, Docker Compose
 - NestJS: ConfigModule + Prisma + Swagger
@@ -370,7 +370,7 @@ Priorities:
 
 **Result**: Working Google/Apple login on web and mobile.
 
-### Phase 2 — Content + Exercise Engine (Weeks 4–7)
+### Phase 2 — Content + Exercise Engine
 - ContentModule (CRUD + Redis cache)
 - Admin UI: categories, word sets, words
 - ProgressModule + cycle logic
@@ -381,7 +381,7 @@ Priorities:
 
 **Result**: All 4 exercises working. Content created via admin panel.
 
-### Phase 3 — Subscriptions + Payments (Weeks 8–10)
+### Phase 3 — Subscriptions + Payments
 - SubscriptionsModule + trial
 - CurrencyMiddleware (geoip-lite)
 - PaymentsModule: Stripe Checkout, portal, webhooks
@@ -393,7 +393,7 @@ Priorities:
 
 **Result**: Full monetization cycle on all platforms.
 
-### Phase 4 — Notifications + Analytics + Polish (Weeks 11–13)
+### Phase 4 — Notifications + Analytics + Polish
 - BullMQ: daily reminders + trial expiry jobs
 - Admin analytics: registration and subscription charts
 - Admin: user management (view, block)
