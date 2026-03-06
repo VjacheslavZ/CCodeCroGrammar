@@ -8,30 +8,29 @@ An application for learning Croatian grammar through interactive exercises. Targ
 
 ## Technology Stack
 
-| Layer | Technology |
-|---|---|
-| Monorepo | Turborepo |
-| Web + Admin UI | React.js + TypeScript + Material UI (MUI) |
-| Mobile | Expo (React Native) + Expo Router |
-| Backend | NestJS + TypeScript (Node.js 24 LTS) |
-| Database | PostgreSQL + Prisma ORM |
-| Cache / Queues | Redis + BullMQ |
-| State | Redux Toolkit + TanStack Query |
-| Forms | React Hook Form + Zod |
-| i18n | i18next + react-i18next |
-| Authentication | Passport.js (Google OAuth2 + Apple) + JWT |
-| Web Payments | Stripe (Checkout + Customer Portal) |
-| Mobile Payments | RevenueCat (App Store + Google Play IAP) |
-| Push Notifications | Expo Notifications + BullMQ |
-| Frontend Tests | Jest + React Testing Library |
-| Backend Tests | Node.js `node:test` (built-in) |
-| Linting | ESLint (eslint-config-airbnb) + Prettier |
-| Pre-commit | Husky + lint-staged (runs tests) |
-| Error Monitoring | Sentry |
-| API Deploy | Railway (PostgreSQL + Redis included) |
-| Web/Admin Deploy | Vercel |
-| Mobile Deploy | Expo EAS Build + EAS Submit |
-
+| Layer              | Technology                                |
+| ------------------ | ----------------------------------------- |
+| Monorepo           | Turborepo                                 |
+| Web + Admin UI     | React.js + TypeScript + Material UI (MUI) |
+| Mobile             | Expo (React Native) + Expo Router         |
+| Backend            | NestJS + TypeScript (Node.js 24 LTS)      |
+| Database           | PostgreSQL + Prisma ORM                   |
+| Cache / Queues     | Redis + BullMQ                            |
+| State              | Redux Toolkit + TanStack Query            |
+| Forms              | React Hook Form + Zod                     |
+| i18n               | i18next + react-i18next                   |
+| Authentication     | Passport.js (Google OAuth2 + Apple) + JWT |
+| Web Payments       | Stripe (Checkout + Customer Portal)       |
+| Mobile Payments    | RevenueCat (App Store + Google Play IAP)  |
+| Push Notifications | Expo Notifications + BullMQ               |
+| Frontend Tests     | Jest + React Testing Library              |
+| Backend Tests      | Node.js `node:test` (built-in)            |
+| Linting            | ESLint (eslint-config-airbnb) + Prettier  |
+| Pre-commit         | Husky + lint-staged (runs tests)          |
+| Error Monitoring   | Sentry                                    |
+| API Deploy         | Railway (PostgreSQL + Redis included)     |
+| Web/Admin Deploy   | Vercel                                    |
+| Mobile Deploy      | Expo EAS Build + EAS Submit               |
 
 ---
 
@@ -162,26 +161,27 @@ StreakLog
 
 ## NestJS Modules
 
-| Module | Responsibility |
-|---|---|
-| `AuthModule` | Google OAuth2 + Apple, JWT (access 15m + refresh 30d in Redis) |
-| `UsersModule` | profile, language, push token, account deletion (GDPR) |
-| `ContentModule` | CRUD for categories / word sets / words (write — admin only) |
-| `ExercisesModule` | sessions, answer processing, validation |
-| `ProgressModule` | `UserWordProgress`, word cycle logic |
-| `SubscriptionsModule` | subscription status, plan list with currency |
-| `PaymentsModule` | Stripe Checkout, Customer Portal, webhook |
-| `RevenueCatModule` | RevenueCat webhook (HMAC verification) |
-| `GamificationModule` | XP, streak, StreakLog |
-| `NotificationsModule` | BullMQ producer/consumer for Expo push |
-| `AnalyticsModule` | aggregations for admin (registrations, subscriptions) |
-| `AdminModule` | `AdminGuard` + admin-only endpoints |
+| Module                | Responsibility                                                 |
+| --------------------- | -------------------------------------------------------------- |
+| `AuthModule`          | Google OAuth2 + Apple, JWT (access 15m + refresh 30d in Redis) |
+| `UsersModule`         | profile, language, push token, account deletion (GDPR)         |
+| `ContentModule`       | CRUD for categories / word sets / words (write — admin only)   |
+| `ExercisesModule`     | sessions, answer processing, validation                        |
+| `ProgressModule`      | `UserWordProgress`, word cycle logic                           |
+| `SubscriptionsModule` | subscription status, plan list with currency                   |
+| `PaymentsModule`      | Stripe Checkout, Customer Portal, webhook                      |
+| `RevenueCatModule`    | RevenueCat webhook (HMAC verification)                         |
+| `GamificationModule`  | XP, streak, StreakLog                                          |
+| `NotificationsModule` | BullMQ producer/consumer for Expo push                         |
+| `AnalyticsModule`     | aggregations for admin (registrations, subscriptions)          |
+| `AdminModule`         | `AdminGuard` + admin-only endpoints                            |
 
 ---
 
 ## Key API Endpoints
 
 ### Auth
+
 ```
 POST /auth/google
 POST /auth/apple
@@ -190,6 +190,7 @@ POST /auth/logout
 ```
 
 ### Users
+
 ```
 GET    /users/me
 PATCH  /users/me
@@ -198,6 +199,7 @@ DELETE /users/me
 ```
 
 ### Content (public read)
+
 ```
 GET /content/categories
 GET /content/categories/:id/word-sets
@@ -205,6 +207,7 @@ GET /content/word-sets/:id/words
 ```
 
 ### Exercises (protected by SubscriptionGuard)
+
 ```
 POST /exercises/sessions              # create session, get words
 POST /exercises/sessions/:id/answer  # submit answer
@@ -213,6 +216,7 @@ GET  /exercises/sessions/:id         # resume session
 ```
 
 ### Subscriptions & Payments
+
 ```
 GET  /subscriptions/plans            # prices in currency by IP
 GET  /subscriptions/me
@@ -224,6 +228,7 @@ POST /revenuecat/webhook             # HMAC verification
 ```
 
 ### Admin
+
 ```
 POST/PATCH/DELETE /admin/categories
 POST/PATCH/DELETE /admin/word-sets
@@ -239,12 +244,12 @@ GET  /admin/analytics/overview
 
 ## Exercise Types (MVP)
 
-| Type | Mechanics | Validation |
-|---|---|---|
-| **Jednina i množina** | A word is shown -> user enters the plural form | trim + lowercase + NFC normalization, server-side comparison |
-| **Flashcards** | Word -> tap "I knew it" / "I didn't know" (self-report) | `KNOWN` -> isCorrect=true; `UNKNOWN` -> isCorrect=false |
-| **Multiple choice** | 4 options (1 correct + 3 from `wrongOptions`) | Server-side validation, correct answer not sent to client before answering |
-| **Fill-in-the-blank** | Sentence with a gap (`{{BLANK}}`) | Comparison with `sentenceBlankAnswer` |
+| Type                  | Mechanics                                               | Validation                                                                 |
+| --------------------- | ------------------------------------------------------- | -------------------------------------------------------------------------- |
+| **Jednina i množina** | A word is shown -> user enters the plural form          | trim + lowercase + NFC normalization, server-side comparison               |
+| **Flashcards**        | Word -> tap "I knew it" / "I didn't know" (self-report) | `KNOWN` -> isCorrect=true; `UNKNOWN` -> isCorrect=false                    |
+| **Multiple choice**   | 4 options (1 correct + 3 from `wrongOptions`)           | Server-side validation, correct answer not sent to client before answering |
+| **Fill-in-the-blank** | Sentence with a gap (`{{BLANK}}`)                       | Comparison with `sentenceBlankAnswer`                                      |
 
 ---
 
@@ -272,9 +277,11 @@ After each answer -> markWordSeen() -> seenInCurrentCycle = true
 ## Payment Architecture
 
 ### Currency Detection
+
 `CurrencyMiddleware` -> `geoip-lite.lookup(req.ip)` -> EU countries = EUR, others = USD -> attached to request context.
 
 ### Stripe (Web)
+
 ```
 Click "Subscribe" ->
 POST /payments/stripe/checkout { planId } ->
@@ -286,6 +293,7 @@ webhook: checkout.session.completed -> update Subscription in DB
 Webhook security: `stripe.webhooks.constructEvent(rawBody, sig, secret)`. Idempotency: check `WebhookEvent.externalEventId` before processing.
 
 ### RevenueCat (Mobile)
+
 ```
 Purchases.configure({ apiKey, appUserID: userId }) ->
 Purchases.purchasePackage(package) ->
@@ -297,6 +305,7 @@ update Subscription in DB
 Webhook security: HMAC from `Authorization` header (shared secret from RevenueCat dashboard).
 
 ### Trial
+
 - Automatically activated on first login
 - `status=TRIALING`, `trialEndsAt = now + 7 days`
 - BullMQ schedules push notifications: 48h and 2h before expiry
@@ -325,20 +334,25 @@ apps/admin/src/**/*.tsx -> jest --findRelatedTests --passWithNoTests
 ## Testing Strategy
 
 ### Backend (`node:test`)
+
 Priorities:
+
 1. `ProgressService` — word cycle logic
 2. `ExercisesService` — answer validation for all 4 types
 3. `GamificationService` — streak, XP
 4. `PaymentsService` — webhook idempotency
 
 ### Frontend (Jest + React Testing Library)
+
 Priorities:
+
 1. Exercise components — input, result
 2. Auth flow
 3. Paywall — trial / plan display
 4. Redux slices
 
 ### Coverage (MVP)
+
 - Backend services: 70% lines
 - Frontend features: 60% lines
 - Mobile: manual testing + Expo Go
@@ -357,6 +371,7 @@ Priorities:
 ## MVP Development Phases
 
 ### Phase 1 — Foundation
+
 - Initialize Turborepo, `@cro/config`, `@cro/shared` packages
 - ESLint (airbnb) + Prettier, Husky, Docker Compose
 - NestJS: ConfigModule + Prisma + Swagger
@@ -371,6 +386,7 @@ Priorities:
 **Result**: Working Google/Apple login on web and mobile.
 
 ### Phase 2 — Content + Exercise Engine
+
 - ContentModule (CRUD + Redis cache)
 - Admin UI: categories, word sets, words
 - ProgressModule + cycle logic
@@ -382,6 +398,7 @@ Priorities:
 **Result**: All 4 exercises working. Content created via admin panel.
 
 ### Phase 3 — Subscriptions + Payments
+
 - SubscriptionsModule + trial
 - CurrencyMiddleware (geoip-lite)
 - PaymentsModule: Stripe Checkout, portal, webhooks
@@ -394,6 +411,7 @@ Priorities:
 **Result**: Full monetization cycle on all platforms.
 
 ### Phase 4 — Notifications + Analytics + Polish
+
 - BullMQ: daily reminders + trial expiry jobs
 - Admin analytics: registration and subscription charts
 - Admin: user management (view, block)
@@ -410,17 +428,18 @@ Priorities:
 
 ## Deploy (MVP)
 
-| Component | Platform |
-|---|---|
-| NestJS API | Railway (includes managed PostgreSQL + Redis) |
-| PostgreSQL | Railway managed |
-| Redis | Railway managed |
-| Web app | Vercel |
-| Admin panel | Vercel (separate project) |
-| Mobile | Expo EAS Build + EAS Submit |
-| Local dev | Docker Compose (postgres + redis) |
+| Component   | Platform                                      |
+| ----------- | --------------------------------------------- |
+| NestJS API  | Railway (includes managed PostgreSQL + Redis) |
+| PostgreSQL  | Railway managed                               |
+| Redis       | Railway managed                               |
+| Web app     | Vercel                                        |
+| Admin panel | Vercel (separate project)                     |
+| Mobile      | Expo EAS Build + EAS Submit                   |
+| Local dev   | Docker Compose (postgres + redis)             |
 
 ### EAS Mobile CI/CD
+
 ```json
 // eas.json
 {
@@ -438,26 +457,26 @@ OTA updates via `expo-updates` for JS changes without resubmitting to stores.
 
 ## Additional Libraries
 
-| Library | Purpose |
-|---|---|
-| `zod` | env variable validation + form schemas |
-| `react-hook-form` | frontend forms |
-| `date-fns` | date handling |
-| `geoip-lite` | country detection by IP -> currency |
-| `class-validator` + `class-transformer` | NestJS DTO validation |
-| `@nestjs/swagger` | automatic API documentation |
-| `@nestjs/throttler` | rate-limiting |
-| `helmet` | security headers |
-| `passport-google-oauth20` + `passport-apple` | OAuth strategies |
-| `@nestjs/jwt` | JWT tokens |
-| `stripe` (Node SDK) | Stripe API |
-| `@stripe/stripe-js` + `@stripe/react-stripe-js` | Stripe frontend |
-| `react-native-purchases` | RevenueCat mobile SDK |
-| `expo-notifications` | push notifications |
-| `@react-navigation/native` v7 | mobile navigation (if needed alongside Expo Router) |
-| `winston` or `pino` | structured logging |
-| `@sentry/nestjs` + `@sentry/react` + `@sentry/react-native` | error monitoring |
-| `commitlint` | Conventional Commits |
+| Library                                                     | Purpose                                             |
+| ----------------------------------------------------------- | --------------------------------------------------- |
+| `zod`                                                       | env variable validation + form schemas              |
+| `react-hook-form`                                           | frontend forms                                      |
+| `date-fns`                                                  | date handling                                       |
+| `geoip-lite`                                                | country detection by IP -> currency                 |
+| `class-validator` + `class-transformer`                     | NestJS DTO validation                               |
+| `@nestjs/swagger`                                           | automatic API documentation                         |
+| `@nestjs/throttler`                                         | rate-limiting                                       |
+| `helmet`                                                    | security headers                                    |
+| `passport-google-oauth20` + `passport-apple`                | OAuth strategies                                    |
+| `@nestjs/jwt`                                               | JWT tokens                                          |
+| `stripe` (Node SDK)                                         | Stripe API                                          |
+| `@stripe/stripe-js` + `@stripe/react-stripe-js`             | Stripe frontend                                     |
+| `react-native-purchases`                                    | RevenueCat mobile SDK                               |
+| `expo-notifications`                                        | push notifications                                  |
+| `@react-navigation/native` v7                               | mobile navigation (if needed alongside Expo Router) |
+| `winston` or `pino`                                         | structured logging                                  |
+| `@sentry/nestjs` + `@sentry/react` + `@sentry/react-native` | error monitoring                                    |
+| `commitlint`                                                | Conventional Commits                                |
 
 ---
 
@@ -473,6 +492,100 @@ OTA updates via `expo-updates` for JS changes without resubmitting to stores.
 8. Admin: change subscription price -> confirm new price is displayed in the app
 9. `turbo run test` -> all tests pass
 10. `turbo run lint typecheck` -> no errors
+
+---
+
+## Local Development Setup
+
+### Prerequisites
+
+- **Node.js 24 LTS** — install via [nvm](https://github.com/nvm-sh/nvm): `nvm install` (reads `.nvmrc`)
+- **Docker** — for PostgreSQL and Redis containers
+- **npm** — comes with Node.js (v11+)
+
+### 1. Install dependencies
+
+```bash
+npm install
+```
+
+### 2. Configure environment
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and fill in at least:
+
+- `DATABASE_URL` — already set for local Docker
+- `REDIS_URL` — already set for local Docker
+- `JWT_SECRET` / `JWT_REFRESH_SECRET` — any random strings (min 16 chars)
+- `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` / `GOOGLE_CALLBACK_URL` — from Google Cloud Console (OAuth 2.0 credentials)
+
+Apple OAuth and Stripe/RevenueCat keys are optional for local development.
+
+### 3. Start infrastructure
+
+```bash
+docker compose up -d
+```
+
+This starts:
+
+- **PostgreSQL 17** on `localhost:5432` (user: `cro`, password: `cro_dev_password`, db: `cro_grammar`)
+- **Redis 7** on `localhost:6379`
+
+### 4. Run database migrations
+
+```bash
+npx prisma migrate dev --schema=apps/api/src/prisma/schema.prisma
+```
+
+To explore the database visually:
+
+```bash
+npx prisma studio --schema=apps/api/src/prisma/schema.prisma
+```
+
+### 5. Start all apps
+
+```bash
+turbo run dev
+```
+
+| App                | URL                                     |
+| ------------------ | --------------------------------------- |
+| API (NestJS)       | http://localhost:3000                   |
+| API Docs (Swagger) | http://localhost:3000/api/docs          |
+| Web app            | http://localhost:5173                   |
+| Admin panel        | http://localhost:5174                   |
+| Mobile (Expo)      | Scan QR code from terminal with Expo Go |
+
+To start a single app:
+
+```bash
+turbo run dev --filter=@cro/api    # API only
+turbo run dev --filter=@cro/web    # Web only
+turbo run dev --filter=@cro/admin  # Admin only
+turbo run dev --filter=@cro/mobile # Mobile only
+```
+
+### 6. Verify everything works
+
+```bash
+turbo run lint                  # ESLint — should pass with 0 warnings
+turbo run typecheck             # TypeScript — should pass with 0 errors
+turbo run test                  # Tests — should pass
+```
+
+### Useful commands
+
+```bash
+npx prisma format --schema=apps/api/src/prisma/schema.prisma   # Format Prisma schema
+npx prisma validate --schema=apps/api/src/prisma/schema.prisma  # Validate schema
+npx prisma generate --schema=apps/api/src/prisma/schema.prisma  # Regenerate Prisma Client
+npm run format                                                   # Prettier on all files
+```
 
 ---
 
