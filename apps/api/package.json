@@ -15,6 +15,7 @@
     "prisma:studio": "prisma studio"
   },
   "dependencies": {
+    "@cro/shared": "*",
     "@nestjs/common": "^11.0.0",
     "@nestjs/config": "^4.0.0",
     "@nestjs/core": "^11.0.0",
@@ -34,17 +35,19 @@
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.0",
-    "zod": "^3.24.0",
-    "@cro/shared": "*"
+    "tsconfig-paths": "^3.15.0",
+    "zod": "^3.24.0"
   },
   "devDependencies": {
+    "@cro/config": "*",
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
+    "@swc/cli": "^0.8.0",
+    "@swc/core": "^1.15.18",
     "@types/node": "^22.0.0",
     "@types/passport-google-oauth20": "^2.0.16",
     "@types/passport-jwt": "^4.0.1",
     "prisma": "^6.4.0",
-    "typescript": "^5.7.0",
-    "@cro/config": "*"
+    "typescript": "^5.7.0"
   }
 }
