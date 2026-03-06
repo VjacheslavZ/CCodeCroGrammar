@@ -1,0 +1,23 @@
+{
+  "common": {
+    "appName": "Croatian Grammar — Admin",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "create": "Create",
+    "edit": "Edit"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "content": "Content",
+    "users": "Users",
+    "pricing": "Pricing",
+    "analytics": "Analytics"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signOut": "Sign Out"
+  }
+}

@@ -1,2 +1,41 @@
+# IDEs
 .idea/
+.vscode/
+*.swp
+*.swo
+
+# Claude
 .claude/settings.local.json
+
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+.turbo/
+.next/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Prisma
+apps/api/src/prisma/migrations/*.sql
+
+# Expo
+apps/mobile/.expo/
+apps/mobile/android/
+apps/mobile/ios/
+
+# Test coverage
+coverage/
+
+# Logs
+*.log
+npm-debug.log*

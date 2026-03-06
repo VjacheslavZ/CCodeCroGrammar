@@ -1,0 +1,7 @@
+{
+  "extends": "../config/src/tsconfig.react.json",
+  "compilerOptions": {
+    "rootDir": "./src"
+  },
+  "include": ["src"]
+}

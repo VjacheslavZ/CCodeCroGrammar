@@ -1,0 +1,31 @@
+{
+  "common": {
+    "appName": "Croatian Grammar",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Retry",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirm": "Confirm"
+  },
+  "auth": {
+    "signInWithGoogle": "Sign in with Google",
+    "signInWithApple": "Sign in with Apple",
+    "signOut": "Sign out",
+    "welcome": "Welcome to Croatian Grammar"
+  },
+  "nav": {
+    "home": "Home",
+    "exercises": "Exercises",
+    "profile": "Profile"
+  },
+  "profile": {
+    "title": "Profile",
+    "xp": "XP",
+    "streak": "Day Streak",
+    "language": "Interface Language",
+    "nativeLanguage": "Native Language",
+    "deleteAccount": "Delete Account"
+  }
+}

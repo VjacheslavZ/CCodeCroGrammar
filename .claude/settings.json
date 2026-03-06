@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Agent",
+      "WebFetch",
+      "WebSearch",
+      "Bash(turbo run lint)",
+      "Bash(turbo run typecheck)",
+      "Bash(turbo run test)",
+      "Bash(npx prisma format)",
+      "Bash(npx prisma validate)",
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)"
+    ],
+    "deny": []
+  }
+}

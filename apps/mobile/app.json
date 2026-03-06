@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "Croatian Grammar",
+    "slug": "cro-grammar",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "crogrammar",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "bundleIdentifier": "com.crogrammar.app",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.crogrammar.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#1565c0"
+      }
+    },
+    "plugins": ["expo-router"]
+  }
+}
