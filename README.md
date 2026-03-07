@@ -361,16 +361,17 @@ Priorities:
 - ESLint (airbnb) + Prettier, Husky, Docker Compose
 - NestJS: ConfigModule + Prisma + Swagger
 - Prisma migration (full schema)
-- AuthModule: Google + Apple, JWT, refresh in Redis
 - Vite + React + MUI for web and admin
-- Expo + Expo Router for mobile
+- Expo starter project (`npx create-expo-app@latest`)
 - i18next (RU/UK/EN) in all apps
 - Redux + TanStack Query setup
 - Basic CI (lint + typecheck + test)
 
-**Result**: Working Google/Apple login on web and mobile.
+**Result**: Working monorepo with all apps scaffolded.
 
 ### Phase 2 — Content + Exercise Engine
+- AuthModule: Google + Apple, JWT, refresh in Redis
+- Expo + Expo Router for mobile
 - ContentModule (CRUD + Redis cache)
 - Admin UI: categories, word sets, words
 - ProgressModule + cycle logic
@@ -379,7 +380,7 @@ Priorities:
 - GamificationModule: XP + streak
 - Unit tests: word cycle, answer validation, streak
 
-**Result**: All 4 exercises working. Content created via admin panel.
+**Result**: Working Google/Apple login on web and mobile. All 4 exercises working. Content created via admin panel.
 
 ### Phase 3 — Subscriptions + Payments
 - SubscriptionsModule + trial
