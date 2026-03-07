@@ -1,6 +1,7 @@
-import { Image, type ImageSource } from 'expo-image';
+import { Image } from 'expo-image';
 import { Platform, StyleSheet } from 'react-native';
 
+import reactLogo from '@/assets/images/partial-react-logo.png';
 import { ExternalLink } from '@/components/external-link';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
@@ -8,9 +9,6 @@ import { ThemedView } from '@/components/themed-view';
 import { Collapsible } from '@/components/ui/collapsible';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Fonts } from '@/constants/theme';
-
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const reactLogo: ImageSource = require('@/assets/images/react-logo.png');
 
 export default function TabTwoScreen() {
   return (

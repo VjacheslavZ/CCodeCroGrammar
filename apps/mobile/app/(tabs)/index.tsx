@@ -1,14 +1,12 @@
-import { Image, type ImageSource } from 'expo-image';
+import { Image } from 'expo-image';
 import { Link } from 'expo-router';
 import { Platform, StyleSheet } from 'react-native';
 
+import reactLogo from '@/assets/images/partial-react-logo.png';
 import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const reactLogo: ImageSource = require('@/assets/images/partial-react-logo.png');
 
 export default function HomeScreen() {
   return (
