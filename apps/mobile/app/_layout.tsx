@@ -1,20 +1,24 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { Provider as ReduxProvider } from 'react-redux';
+import 'react-native-reanimated';
 
-import { store } from '../src/store';
-import '../src/i18n';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 
-const queryClient = new QueryClient();
+export const unstable_settings = {
+  anchor: '(tabs)',
+};
 
 export default function RootLayout() {
+  const colorScheme = useColorScheme();
+
   return (
-    <ReduxProvider store={store}>
-      <QueryClientProvider client={queryClient}>
-        <Stack screenOptions={{ headerShown: false }} />
-        <StatusBar style="auto" />
-      </QueryClientProvider>
-    </ReduxProvider>
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+      </Stack>
+      <StatusBar style="auto" />
+    </ThemeProvider>
   );
 }
