@@ -4,6 +4,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 
 import { AuthService } from './auth.service';
+import { GoogleTokenDto } from './dto/google-token.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @ApiTags('auth')
@@ -21,6 +22,12 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   async googleCallback(@Req() req: Request) {
     return req.user;
+  }
+
+  /** Mobile: verify Google ID token and return auth tokens + user profile */
+  @Post('google/token')
+  async googleToken(@Body() dto: GoogleTokenDto) {
+    return this.auth.verifyGoogleIdToken(dto.idToken);
   }
 
   @Post('refresh')

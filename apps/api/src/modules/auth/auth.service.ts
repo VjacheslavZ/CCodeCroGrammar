@@ -2,7 +2,9 @@ import { randomBytes, createHash } from 'crypto';
 
 import { REFRESH_TOKEN_EXPIRY_DAYS } from '@cro/shared';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { OAuth2Client } from 'google-auth-library';
 
 import { RedisService } from '../../common/redis/redis.service';
 import { UsersService } from '../users/users.service';
@@ -23,15 +25,56 @@ interface JwtPayload {
 
 @Injectable()
 export class AuthService {
+  private readonly googleClient: OAuth2Client;
+
   constructor(
     private readonly jwt: JwtService,
     private readonly redis: RedisService,
     private readonly users: UsersService,
-  ) {}
+    private readonly config: ConfigService,
+  ) {
+    this.googleClient = new OAuth2Client(this.config.get('GOOGLE_CLIENT_ID'));
+  }
 
   async validateOAuthLogin(profile: OAuthProfile) {
     const user = await this.users.findOrCreateByOAuth(profile);
     return this.generateTokens(user.id, user.email, user.role);
+  }
+
+  /** Verify a Google ID token from a mobile client and return auth tokens + user */
+  async verifyGoogleIdToken(idToken: string) {
+    const ticket = await this.googleClient.verifyIdToken({
+      idToken,
+      audience: this.config.get('GOOGLE_CLIENT_ID'),
+    });
+    const payload = ticket.getPayload();
+    if (!payload?.email || !payload?.sub) {
+      throw new UnauthorizedException('Invalid Google ID token');
+    }
+
+    const user = await this.users.findOrCreateByOAuth({
+      provider: 'google',
+      providerId: payload.sub,
+      email: payload.email,
+      name: payload.name ?? payload.email,
+      avatarUrl: payload.picture,
+    });
+
+    const tokens = await this.generateTokens(user.id, user.email, user.role);
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        avatarUrl: user.avatarUrl,
+        role: user.role,
+        nativeLanguage: user.nativeLanguage,
+        xpTotal: user.xpTotal,
+        currentStreak: user.currentStreak,
+        longestStreak: user.longestStreak,
+      },
+      tokens,
+    };
   }
 
   async refreshTokens(refreshToken: string) {

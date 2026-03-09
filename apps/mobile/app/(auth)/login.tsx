@@ -4,13 +4,18 @@ import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useGoogleAuth } from '@/hooks/use-google-auth';
 
 export default function LoginScreen() {
   const { t } = useTranslation();
   const colorScheme = useColorScheme() ?? 'light';
+  const { promptAsync, isReady } = useGoogleAuth();
 
-  // TODO: implement in Step 7
-  const handleGoogleSignIn = () => {};
+  const handleGoogleSignIn = () => {
+    promptAsync();
+  };
+
+  // TODO: implement Apple sign-in
   const handleAppleSignIn = () => {};
 
   return (
@@ -21,7 +26,11 @@ export default function LoginScreen() {
       </View>
 
       <View style={styles.buttons}>
-        <Pressable style={[styles.button, styles.googleButton]} onPress={handleGoogleSignIn}>
+        <Pressable
+          style={[styles.button, styles.googleButton, !isReady && styles.buttonDisabled]}
+          onPress={handleGoogleSignIn}
+          disabled={!isReady}
+        >
           <ThemedText style={styles.googleButtonText}>{t('auth.signInWithGoogle')}</ThemedText>
         </Pressable>
 
@@ -69,6 +78,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  buttonDisabled: {
+    opacity: 0.5,
   },
   googleButton: {
     backgroundColor: '#4285F4',
