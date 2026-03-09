@@ -378,12 +378,101 @@ Priorities:
 - Prisma migration (full schema)
 - AuthModule: Google + Apple, JWT, refresh in Redis
 - Vite + React + MUI for web and admin
-- Expo + Expo Router for mobile
-- i18next (RU/UK/EN) in all apps
-- Redux + TanStack Query setup
+- Vite + React + MUI for web and admin (done)
+- Expo + Expo Router for mobile (see steps below)
+- i18next (RU/UK/EN) in all apps (see steps below for mobile)
+- Redux + TanStack Query setup (see steps below for mobile)
 - Basic CI (lint + typecheck + test)
 
 **Result**: Working Google/Apple login on web and mobile.
+
+#### Phase 1 — Mobile Steps
+
+**Step 1 — Clean up Expo starter & configure app identity**
+
+- Remove example screens content (`explore.tsx` placeholder, `modal.tsx` demo)
+- Remove example components (`HelloWave`, `ParallaxScrollView`, `Collapsible`, example assets)
+- Update `app.json`: set `name` → "Croatian Grammar", `slug` → "cro-grammar", `scheme` → "crogrammar"
+- Keep useful components: `ThemedText`, `ThemedView`, `IconSymbol`, `HapticTab`, `ExternalLink`
+- Keep theme system (`constants/theme.ts`, `useColorScheme`, `useThemeColor`)
+
+**Expected result**: App launches with a clean Home tab showing "Croatian Grammar" title. No example/demo content remains. `turbo run dev --filter=@cro/mobile` starts without errors.
+
+---
+
+**Step 2 — Set up i18n (i18next + react-i18next)**
+
+- Install `i18next`, `react-i18next`, `expo-localization`
+- Create `i18n/` directory with `index.ts` config and `locales/` (en.json, ru.json, uk.json)
+- Locale keys: `common.*`, `auth.*`, `nav.*`, `profile.*` (same structure as web app)
+- Detect device language via `expo-localization`, fallback to `en`
+- Initialize i18n in root `_layout.tsx`
+- Replace hardcoded strings in tab labels and screens with `t()` calls
+
+**Expected result**: App displays UI strings from locale files. Changing device language to RU/UK switches app strings accordingly. Fallback to English for unsupported languages.
+
+---
+
+**Step 3 — Set up Redux Toolkit store**
+
+- Install `@reduxjs/toolkit`, `react-redux`
+- Create `store/index.ts` with `configureStore`, typed hooks (`useAppDispatch`, `useAppSelector`)
+- Create `store/auth.slice.ts` with `AuthState` (`user`, `isAuthenticated`), actions: `setUser`, `clearUser`
+- Use `@cro/shared` `UserProfile` type for user state
+- Wrap app with `<ReduxProvider>` in root `_layout.tsx`
+
+**Expected result**: Redux store initializes on app launch. Auth slice is accessible via `useAppSelector`. No UI changes yet — state layer is ready for auth integration.
+
+---
+
+**Step 4 — Set up TanStack Query + axios API client**
+
+- Install `@tanstack/react-query`, `axios`, `expo-secure-store`
+- Create `api/client.ts` with axios instance (baseURL from env/constants)
+- Add request interceptor: attach access token from `expo-secure-store`
+- Add response interceptor: on 401, attempt token refresh via `/auth/refresh`, retry original request; on failure, clear tokens and set `isAuthenticated = false`
+- Create `api/query-client.ts` with `QueryClient` (staleTime: 5 min, retry: 1)
+- Wrap app with `<QueryClientProvider>` in root `_layout.tsx`
+
+**Expected result**: API client is configured and exported. Token storage uses secure native storage (not AsyncStorage). Automatic 401 → refresh → retry flow is in place. `turbo run typecheck --filter=@cro/mobile` passes.
+
+---
+
+**Step 5 — Set up auth navigation layout (auth vs main groups)**
+
+- Restructure Expo Router groups:
+  - `app/(auth)/` — unauthenticated screens: `login.tsx`
+  - `app/(tabs)/` — authenticated screens: `index.tsx` (Home), `exercises.tsx`, `profile.tsx`
+- Update root `_layout.tsx`: read `isAuthenticated` from Redux store, redirect to `/(auth)/login` or `/(tabs)` accordingly
+- Configure 3-tab bottom navigation: Home, Exercises, Profile (with i18n labels from `nav.*` keys)
+- Add tab icons using `IconSymbol` component
+
+**Expected result**: App shows login screen by default (unauthenticated state). Manually setting `isAuthenticated = true` in Redux shows the 3-tab layout. Navigation between tabs works. Tab labels display in the current locale language.
+
+---
+
+**Step 6 — Create login screen (Google + Apple sign-in buttons)**
+
+- Create `app/(auth)/login.tsx` with app logo, welcome text, and two sign-in buttons
+- Style buttons: "Sign in with Google" and "Sign in with Apple" (Apple button only on iOS via `Platform.OS`)
+- Use i18n keys `auth.signInWithGoogle`, `auth.signInWithApple` for button labels
+- Buttons are non-functional placeholders (onPress logs to console) — API connection in next step
+
+**Expected result**: Login screen shows app name, welcome message, and sign-in buttons. Apple button only appears on iOS. Text is translated based on device language. UI is clean and themed (light/dark mode supported).
+
+---
+
+**Step 7 — Connect auth to API (Google OAuth flow + token storage)**
+
+- Install `expo-auth-session`, `expo-crypto` (for PKCE)
+- Implement Google OAuth flow: `useAuthRequest` → open Google consent screen → receive auth code → send to `POST /auth/google` → receive JWT tokens
+- Store `accessToken` and `refreshToken` in `expo-secure-store`
+- Dispatch `setUser` action with user profile from API response
+- On logout: call `POST /auth/logout`, clear tokens from secure store, dispatch `clearUser`
+- Add "Sign out" button to Profile tab screen
+- Handle deep link redirect after OAuth (`scheme` in `app.json`)
+
+**Expected result**: Tapping "Sign in with Google" opens Google consent screen. After successful auth, user lands on the Home tab with their profile loaded. Tokens are stored securely. App persists auth state across restarts (checks secure store on launch). Sign out returns to login screen. `turbo run typecheck --filter=@cro/mobile` passes.
 
 ### Phase 2 — Content + Exercise Engine
 
