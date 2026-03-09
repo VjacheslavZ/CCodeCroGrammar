@@ -8,20 +8,28 @@ import '@/i18n';
 
 import { queryClient } from '@/api/query-client';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { store } from '@/store';
+import { store, useAppSelector } from '@/store';
+
+function RootNavigator() {
+  const colorScheme = useColorScheme();
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+
+  return (
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" redirect={!isAuthenticated} />
+        <Stack.Screen name="(auth)" redirect={isAuthenticated} />
+      </Stack>
+      <StatusBar style="auto" />
+    </ThemeProvider>
+  );
+}
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <ReduxProvider store={store}>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          </Stack>
-          <StatusBar style="auto" />
-        </ThemeProvider>
+        <RootNavigator />
       </QueryClientProvider>
     </ReduxProvider>
   );
