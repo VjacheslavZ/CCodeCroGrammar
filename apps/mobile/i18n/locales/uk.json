@@ -1,0 +1,31 @@
+{
+  "common": {
+    "appName": "Хорватська граматика",
+    "loading": "Завантаження...",
+    "error": "Щось пішло не так",
+    "retry": "Повторити",
+    "save": "Зберегти",
+    "cancel": "Скасувати",
+    "delete": "Видалити",
+    "confirm": "Підтвердити"
+  },
+  "auth": {
+    "signInWithGoogle": "Увійти через Google",
+    "signInWithApple": "Увійти через Apple",
+    "signOut": "Вийти",
+    "welcome": "Ласкаво просимо до Хорватської граматики"
+  },
+  "nav": {
+    "home": "Головна",
+    "exercises": "Вправи",
+    "profile": "Профіль"
+  },
+  "profile": {
+    "title": "Профіль",
+    "xp": "Досвід",
+    "streak": "Днів поспіль",
+    "language": "Мова інтерфейсу",
+    "nativeLanguage": "Рідна мова",
+    "deleteAccount": "Видалити акаунт"
+  }
+}
