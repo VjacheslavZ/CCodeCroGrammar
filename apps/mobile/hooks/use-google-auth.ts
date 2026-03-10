@@ -1,7 +1,8 @@
 import { AuthResponse } from '@cro/shared';
+import Constants from 'expo-constants';
 import * as Linking from 'expo-linking';
 import * as WebBrowser from 'expo-web-browser';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 
 import { apiClient } from '@/api/client';
 import { setTokens } from '@/api/token-storage';
@@ -9,16 +10,20 @@ import { useAppDispatch } from '@/store';
 import { setUser } from '@/store/auth.slice';
 
 const GOOGLE_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID ?? '';
-const REDIRECT_URI = Linking.createURL('auth/callback');
 
-// Build Google OAuth URL manually to avoid expo-auth-session (requires native build)
+// Expo auth proxy redirect — add this URI to Google Console authorized redirect URIs
+const REDIRECT_URI = `https://auth.expo.io/@${Constants.expoConfig?.owner ?? 'anonymous'}/cro-grammar`;
+
+// App custom scheme — WebBrowser listens for this to close the browser
+const APP_SCHEME = Linking.createURL('');
+
 function buildGoogleAuthUrl(): string {
   const params = new URLSearchParams({
     client_id: GOOGLE_CLIENT_ID,
     redirect_uri: REDIRECT_URI,
-    response_type: 'id_token',
+    response_type: 'code',
     scope: 'openid email profile',
-    nonce: Math.random().toString(36).substring(2),
+    access_type: 'offline',
   });
   return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
 }
@@ -26,33 +31,25 @@ function buildGoogleAuthUrl(): string {
 export function useGoogleAuth() {
   const dispatch = useAppDispatch();
 
-  const handleIdToken = useCallback(
-    async (idToken: string) => {
-      const { data } = await apiClient.post<AuthResponse>('/auth/google/token', { idToken });
-      await setTokens(data.tokens.accessToken, data.tokens.refreshToken);
-      dispatch(setUser(data.user));
-    },
-    [dispatch],
-  );
-
-  // Listen for deep link redirect with id_token fragment
-  useEffect(() => {
-    const subscription = Linking.addEventListener('url', ({ url }) => {
-      const hash = url.split('#')[1];
-      if (!hash) return;
-      const params = new URLSearchParams(hash);
-      const idToken = params.get('id_token');
-      if (idToken) {
-        handleIdToken(idToken);
-      }
-    });
-    return () => subscription.remove();
-  }, [handleIdToken]);
-
   const promptAsync = useCallback(async () => {
     if (!GOOGLE_CLIENT_ID) return;
-    await WebBrowser.openAuthSessionAsync(buildGoogleAuthUrl(), REDIRECT_URI);
-  }, []);
+
+    const result = await WebBrowser.openAuthSessionAsync(buildGoogleAuthUrl(), APP_SCHEME);
+
+    if (result.type !== 'success') return;
+
+    // Extract authorization code from redirect URL
+    const url = new URL(result.url);
+    const code = url.searchParams.get('code');
+    if (!code) return;
+
+    const { data } = await apiClient.post<AuthResponse>('/auth/google/token', {
+      code,
+      redirectUri: REDIRECT_URI,
+    });
+    await setTokens(data.tokens.accessToken, data.tokens.refreshToken);
+    dispatch(setUser(data.user));
+  }, [dispatch]);
 
   return { promptAsync, isReady: !!GOOGLE_CLIENT_ID };
 }

@@ -2,10 +2,11 @@
   "expo": {
     "name": "Croatian Grammar",
     "slug": "cro-grammar",
+    "owner": "vjacheslavz",
+    "scheme": "crogrammar",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "crogrammar",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -43,6 +44,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "6ebf43f4-2c96-439d-bc7c-e3269e8d0ba0"
+      }
     }
   }
 }

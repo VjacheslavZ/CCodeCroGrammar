@@ -24,10 +24,16 @@ export class AuthController {
     return req.user;
   }
 
-  /** Mobile: verify Google ID token and return auth tokens + user profile */
+  /** Mobile/Web: exchange Google auth code or verify ID token */
   @Post('google/token')
   async googleToken(@Body() dto: GoogleTokenDto) {
-    return this.auth.verifyGoogleIdToken(dto.idToken);
+    if (dto.code && dto.redirectUri) {
+      return this.auth.exchangeGoogleCode(dto.code, dto.redirectUri);
+    }
+    if (dto.idToken) {
+      return this.auth.verifyGoogleIdToken(dto.idToken);
+    }
+    return { message: 'Provide either idToken or code + redirectUri' };
   }
 
   @Post('refresh')

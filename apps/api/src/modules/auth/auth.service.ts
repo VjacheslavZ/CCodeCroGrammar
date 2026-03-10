@@ -33,7 +33,10 @@ export class AuthService {
     private readonly users: UsersService,
     private readonly config: ConfigService,
   ) {
-    this.googleClient = new OAuth2Client(this.config.get('GOOGLE_CLIENT_ID'));
+    this.googleClient = new OAuth2Client(
+      this.config.get('GOOGLE_CLIENT_ID'),
+      this.config.get('GOOGLE_CLIENT_SECRET'),
+    );
   }
 
   async validateOAuthLogin(profile: OAuthProfile) {
@@ -75,6 +78,16 @@ export class AuthService {
       },
       tokens,
     };
+  }
+
+  /** Exchange a Google authorization code for user info and return auth tokens + user */
+  async exchangeGoogleCode(code: string, redirectUri: string) {
+    const { tokens } = await this.googleClient.getToken({ code, redirect_uri: redirectUri });
+    const idToken = tokens.id_token;
+    if (!idToken) {
+      throw new UnauthorizedException('Failed to get ID token from Google');
+    }
+    return this.verifyGoogleIdToken(idToken);
   }
 
   async refreshTokens(refreshToken: string) {

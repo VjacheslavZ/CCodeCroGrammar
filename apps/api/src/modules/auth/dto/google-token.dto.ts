@@ -1,8 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class GoogleTokenDto {
-  @ApiProperty({ description: 'Google ID token from mobile client' })
+  @ApiProperty({ description: 'Google ID token (web flow)', required: false })
   @IsString()
-  idToken!: string;
+  @IsOptional()
+  idToken?: string;
+
+  @ApiProperty({ description: 'Google authorization code (mobile flow)', required: false })
+  @IsString()
+  @IsOptional()
+  code?: string;
+
+  @ApiProperty({
+    description: 'Redirect URI used in the auth request (required with code)',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  redirectUri?: string;
 }
