@@ -392,7 +392,7 @@ Priorities:
 
 - Remove example screens content (`explore.tsx` placeholder, `modal.tsx` demo)
 - Remove example components (`HelloWave`, `ParallaxScrollView`, `Collapsible`, example assets)
-- Update `app.json`: set `name` → "Croatian Grammar", `slug` → "cro-grammar", `scheme` → "crogrammar"
+- Update `app.json`: set `name` → "Croatian Grammar", `slug` → "croatian-grammar", `scheme` → "crogrammar"
 - Keep useful components: `ThemedText`, `ThemedView`, `IconSymbol`, `HapticTab`, `ExternalLink`
 - Keep theme system (`constants/theme.ts`, `useColorScheme`, `useThemeColor`)
 
